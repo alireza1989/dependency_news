@@ -1,4 +1,4 @@
-```
+```markdown
 # Release Notes - transformers v4.38.2
 
 **Repository Owner:** huggingface  
@@ -17,4 +17,4 @@
 - Addressed precision loss for Llama / Gemma + Gemma logits.float()
 - Patched YOLOS and others
 - Updated to use torch.bool instead of torch.int64 for non-persistent causal mask buffer
-```
+```  

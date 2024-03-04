@@ -1,5 +1,6 @@
 import requests
 import json
+from pathlib import Path
 from bs4 import BeautifulSoup
 import os
 from openai import OpenAI
@@ -39,6 +40,26 @@ def generate_summary(text: str)-> str:
     except Exception as e:
         print(f"An error occurred: {e}")
 
+def generate_md_notes(text: str)-> str:
+    try:
+        message = [
+            {"role": "system", "content": "You are a senior software engineer who is in charge of summarizing the release notes of python packages. You are given the summarized notes an need to put them into a well formatted marked down files."},
+            {"role": "user", "content": f"This is the summarized release notes. Put them into a well formatted mark down file: \n {text}"},
+        ]
+
+        response = client.chat.completions.create(model="gpt-3.5-turbo",  # Specify the GPT-3.5 Turbo model
+        messages= message,
+        temperature=0.8,
+        max_tokens=1000,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=0.0)
+
+        content = response.choices[0].message.content
+        return content
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 def scrape_latest_release_notes(url: str = None):
     """Scrape the latest release notes from a GitHub repository's releases page."""
@@ -90,8 +111,14 @@ for repo in repos:
     latest_release_notes = scrape_latest_release_notes(url)
     latest_release_notes = strip_to_max_words(latest_release_notes, MAX_NUM_WORDS)
     summary = generate_summary(latest_release_notes)
-    print("\n =====================================================================")
-    print(f"\nThe maintainer: {owner}")
-    print(f"\nRepository: {repo}")
-    print("\n" + summary)
+    summary = f"Reepository owner: {owner} \n" + f"The repository: {repo} \n" + summary
+    md_file_content = generate_md_notes(summary)
+
+    md_file_path = Path(f"dependency_repo/{owner}_{repo}.md")
+    absolute_path = md_file_path.resolve() 
+
+    with open(md_file_path, 'w') as md_file:
+        md_file.write(md_file_content)
+
+
 
