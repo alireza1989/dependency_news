@@ -1,0 +1,15 @@
+[
+    {
+        "owner": "pytorch",
+        "repo": "pytorch"
+    },
+    {
+        "owner": "lightning-ai",
+        "repo": "pytorch-lightning"
+    },
+    {
+        "owner": "huggingface",
+        "repo": "transformers"
+
+    }
+]
